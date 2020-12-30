@@ -1,7 +1,8 @@
 {
   "extends": ["tslint:recommended"],
   "rules": {
-    "no-console": false
+    "no-console": false,
+    "forin": false
   },
   "linterOptions": {
     "exclude": ["node_modules/**/*.ts"]
