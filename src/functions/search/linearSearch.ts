@@ -1,5 +1,5 @@
 import * as p5 from "p5"
-import wait from "./wait"
+import wait from "../wait"
 
 /**
  * Create a linear search animation function

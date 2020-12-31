@@ -1,6 +1,6 @@
 import * as p5 from "p5"
 import drawItem from "./functions/drawItem"
-import linearSearchAnimated from "./functions/linearSearch"
+import linearSearchAnimated from "./functions/search/linearSearch"
 import randomArray from "./functions/randomArray"
 import bubbleSortAnimated from "./functions/sorting/bubbleSort"
 
