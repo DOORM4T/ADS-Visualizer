@@ -29,8 +29,8 @@ function drawItem(
     p.fill(...color)
   }
 
+  p.stroke(204)
   p.rect(x - size / 2, y - size / 2, size, size)
-
   p.fill(...textColor)
 
   p.noStroke()

@@ -14,6 +14,6 @@ interface ISketchState {
   itemSize: number
   offsetX: number
   offsetY: number
-  focusIndex: number
+  highlightIndexes: number[]
   didFindValue: boolean
 }

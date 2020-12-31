@@ -13,11 +13,12 @@ function linearSearchAnimated(
   searchValueInput: p5.Element,
 ) {
   return async () => {
+    state.highlightIndexes = []
     state.didFindValue = false
     /* call this function after each iteration in the linear search */
     const funct = async (index: number) => {
       /* set the index to focus on */
-      state.focusIndex = index
+      state.highlightIndexes.push(index)
 
       /* if slider is above 0, search with a delay */
       const currentDelay = +speedSlider.value() * 10
@@ -25,16 +26,23 @@ function linearSearchAnimated(
     }
 
     const startTime = new Date().getTime()
+
     const result = await linearSearch(
       state.values,
       +searchValueInput.value(),
       funct,
     )
+
     const timeElapsedMs = new Date().getTime() - startTime
     console.log(`${timeElapsedMs / 1000}s`)
 
-    if (result > -1) state.didFindValue = true
-    else state.focusIndex = -1
+    if (result > -1) {
+      state.didFindValue = true
+      state.highlightIndexes = state.highlightIndexes.slice(
+        state.highlightIndexes.length - 1,
+        state.highlightIndexes.length,
+      )
+    } else state.highlightIndexes = []
   }
 }
 
@@ -57,7 +65,6 @@ export async function linearSearch(
     const value = array[i]
 
     /* custom function to call in between iterations */
-
     if (funct) await funct(i)
 
     /* found the value? return its index */

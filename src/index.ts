@@ -2,6 +2,7 @@ import * as p5 from "p5"
 import drawItem from "./functions/drawItem"
 import linearSearchAnimated from "./functions/linearSearch"
 import randomArray from "./functions/randomArray"
+import bubbleSortAnimated from "./functions/sorting/bubbleSort"
 
 //
 // START THE SKETCH
@@ -16,7 +17,7 @@ const buttonContainerId = "buttons"
 /* Global Variables */
 const MIN = 0
 const MAX = 10000
-const COUNT = 10
+const COUNT = 100
 
 /* Sketch Function */
 function sketch(p: p5) {
@@ -26,7 +27,7 @@ function sketch(p: p5) {
     itemSize: 50,
     offsetX: 50,
     offsetY: 50,
-    focusIndex: 0,
+    highlightIndexes: [],
     didFindValue: false,
   }
 
@@ -34,13 +35,16 @@ function sketch(p: p5) {
   let doWrapCheckbox: p5.Element
   let speedSlider: p5.Element
   let searchValueInput: p5.Element
+
   let linearSearchBtn: p5.Element
+  let bubbleSortBtn: p5.Element
 
   /* CANVAS SETUP */
   p.setup = () => {
     // CONFIG
     p.createCanvas(visualizerDiv.clientWidth, visualizerDiv.clientHeight)
     p.frameRate(120)
+    p.strokeWeight(4)
 
     // UI
     /* checkbox for row wrapping */
@@ -48,7 +52,7 @@ function sketch(p: p5) {
     doWrapCheckbox.parent(buttonContainerId)
 
     /* slider for animation speed */
-    speedSlider = p.createSlider(0, 10)
+    speedSlider = p.createSlider(0, 20)
     speedSlider.parent(buttonContainerId)
 
     /* input for the search value */
@@ -63,19 +67,34 @@ function sketch(p: p5) {
       linearSearchAnimated(state, speedSlider, searchValueInput),
     )
 
+    /* BUBBLE SORT */
+    bubbleSortBtn = p.createButton("Bubble Sort")
+    bubbleSortBtn.parent(buttonContainerId)
+    bubbleSortBtn.mouseClicked(bubbleSortAnimated(state, speedSlider))
+
     /* BINARY SEARCH */
+    // binarySearchBtn = p.createButton("Binary Search")
+    // binarySearchBtn.parent(buttonContainerId)
+    // binarySearchBtn.mouseClicked(
+    //   binarySearchAnimated(state, speedSlider, searchValueInput),
+    // )
   }
 
   /* change size on scroll */
   const MIN_ITEM_SIZE = 30
   const MAX_ITEM_SIZE = 200
+  const RESIZE_SPEED_SCALE = -0.05
   p.mouseWheel = (event: WheelEvent) => {
     if (!isWithinCanvas()) return
 
-    state.itemSize += -0.5 * event.deltaY
-    if (state.itemSize < MIN_ITEM_SIZE) state.itemSize = MIN_ITEM_SIZE
-    if (state.itemSize > MAX_ITEM_SIZE) state.itemSize = MAX_ITEM_SIZE
-    p.textSize(state.itemSize / 3)
+    if (p.keyIsPressed && /(Alt|Shift)/.test(p.key)) {
+      state.offsetY += -1 * event.deltaY
+    } else {
+      state.itemSize += RESIZE_SPEED_SCALE * event.deltaY
+      if (state.itemSize < MIN_ITEM_SIZE) state.itemSize = MIN_ITEM_SIZE
+      if (state.itemSize > MAX_ITEM_SIZE) state.itemSize = MAX_ITEM_SIZE
+      p.textSize(state.itemSize / 3)
+    }
   }
 
   const DEFAULT_PAN_KEY = 32 // SPACEBAR
@@ -113,13 +132,19 @@ function sketch(p: p5) {
 
       let color: ColorTuple
       let textColor: ColorTuple = [0, 0, 0]
-      if (index === state.focusIndex) {
-        /* highlight the focused index */
+      if (state.highlightIndexes.includes(index)) {
+        /* highlight the focused index(es) */
         if (state.didFindValue) color = [0, 255, 0]
         else color = [255, 255, 0]
       } else {
         /* default color */
-        const saturation = p.map(value, MIN, MAX, 0, 255)
+        const saturation = p.map(
+          value,
+          MIN,
+          MAX,
+          255,
+          0,
+        ) /* higher values are darker */
         color = [saturation, 0, 0]
         textColor = [255, 255, 255]
       }
