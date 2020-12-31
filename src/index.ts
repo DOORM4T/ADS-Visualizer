@@ -3,6 +3,7 @@ import drawItem from "./functions/drawItem"
 import linearSearchAnimated from "./functions/search/linearSearch"
 import randomArray from "./functions/randomArray"
 import bubbleSortAnimated from "./functions/sorting/bubbleSort"
+import binarySearchAnimated from "./functions/search/binarySearch"
 
 //
 // START THE SKETCH
@@ -17,7 +18,7 @@ const buttonContainerId = "buttons"
 /* Global Variables */
 const MIN = 0
 const MAX = 10000
-const COUNT = 100
+const COUNT = 1000
 
 /* Sketch Function */
 function sketch(p: p5) {
@@ -36,15 +37,17 @@ function sketch(p: p5) {
   let speedSlider: p5.Element
   let searchValueInput: p5.Element
 
-  let linearSearchBtn: p5.Element
   let bubbleSortBtn: p5.Element
+
+  let linearSearchBtn: p5.Element
+  let binarySearchBtn: p5.Element
 
   /* CANVAS SETUP */
   p.setup = () => {
     // CONFIG
     p.createCanvas(visualizerDiv.clientWidth, visualizerDiv.clientHeight)
-    p.frameRate(120)
-    p.strokeWeight(4)
+    p.frameRate(240)
+    p.strokeWeight(2)
 
     // UI
     /* checkbox for row wrapping */
@@ -52,14 +55,23 @@ function sketch(p: p5) {
     doWrapCheckbox.parent(buttonContainerId)
 
     /* slider for animation speed */
-    speedSlider = p.createSlider(0, 20)
+    const SLIDER_MAX = 1000
+    speedSlider = p.createSlider(0, SLIDER_MAX)
     speedSlider.parent(buttonContainerId)
+    speedSlider.attribute("step", "10")
+    speedSlider.value(SLIDER_MAX / 2)
 
     /* input for the search value */
     searchValueInput = p.createInput("Search for...", "number")
     searchValueInput.parent(buttonContainerId)
+    searchValueInput.value(0)
 
     /* buttons for selecting the operation */
+    /* BUBBLE SORT */
+    bubbleSortBtn = p.createButton("Bubble Sort")
+    bubbleSortBtn.parent(buttonContainerId)
+    bubbleSortBtn.mouseClicked(bubbleSortAnimated(state, speedSlider))
+
     /* LINEAR SEARCH */
     linearSearchBtn = p.createButton("Linear Search")
     linearSearchBtn.parent(buttonContainerId)
@@ -67,21 +79,16 @@ function sketch(p: p5) {
       linearSearchAnimated(state, speedSlider, searchValueInput),
     )
 
-    /* BUBBLE SORT */
-    bubbleSortBtn = p.createButton("Bubble Sort")
-    bubbleSortBtn.parent(buttonContainerId)
-    bubbleSortBtn.mouseClicked(bubbleSortAnimated(state, speedSlider))
-
     /* BINARY SEARCH */
-    // binarySearchBtn = p.createButton("Binary Search")
-    // binarySearchBtn.parent(buttonContainerId)
-    // binarySearchBtn.mouseClicked(
-    //   binarySearchAnimated(state, speedSlider, searchValueInput),
-    // )
+    binarySearchBtn = p.createButton("Binary Search")
+    binarySearchBtn.parent(buttonContainerId)
+    binarySearchBtn.mouseClicked(
+      binarySearchAnimated(state, speedSlider, searchValueInput),
+    )
   }
 
   /* change size on scroll */
-  const MIN_ITEM_SIZE = 30
+  const MIN_ITEM_SIZE = 20
   const MAX_ITEM_SIZE = 200
   const RESIZE_SPEED_SCALE = -0.05
   p.mouseWheel = (event: WheelEvent) => {

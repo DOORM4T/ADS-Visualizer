@@ -21,7 +21,7 @@ function linearSearchAnimated(
       state.highlightIndexes.push(index)
 
       /* if slider is above 0, search with a delay */
-      const currentDelay = +speedSlider.value() * 10
+      const currentDelay = +speedSlider.value()
       if (currentDelay !== 0) await wait(currentDelay)
     }
 

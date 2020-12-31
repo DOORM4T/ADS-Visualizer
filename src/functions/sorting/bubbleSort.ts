@@ -17,7 +17,7 @@ function bubbleSortAnimated(state: ISketchState, speedSlider: p5.Element) {
       state.highlightIndexes = [index]
 
       /* if slider is above 0, search with a delay */
-      const currentDelay = +speedSlider.value() * 10
+      const currentDelay = +speedSlider.value()
       if (currentDelay !== 0) await wait(currentDelay)
     }
 
