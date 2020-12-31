@@ -4,12 +4,22 @@ function drawItem(
   p: p5,
   x: number,
   y: number,
+  offsetX: number,
+  offsetY: number,
   value: any,
   size = 50,
   color: ColorTuple,
   textColor: ColorTuple,
 ) {
-  const isWithinBounds = getIsWithinBounds(p.mouseX, p.mouseY, x, y, size)
+  const isWithinBounds = getIsWithinBounds(
+    p.mouseX,
+    p.mouseY,
+    offsetX,
+    offsetY,
+    x,
+    y,
+    size,
+  )
 
   /* hover */
   if (isWithinBounds) {
@@ -42,11 +52,15 @@ export default drawItem
 function getIsWithinBounds(
   mouseX: number,
   mouseY: number,
+  offsetX: number,
+  offsetY: number,
   x: number,
   y: number,
   size: number,
 ) {
-  const isWithinXBounds = mouseX > x - size / 2 && mouseX < x + size - size / 2
-  const isWithinYBounds = mouseY > y - size / 2 && mouseY < y + size / 2
+  const isWithinXBounds =
+    mouseX - offsetX > x - size / 2 && mouseX - offsetX < x + size - size / 2
+  const isWithinYBounds =
+    mouseY - offsetY > y - size / 2 && mouseY - offsetY < y + size / 2
   return isWithinXBounds && isWithinYBounds
 }

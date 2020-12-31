@@ -19,7 +19,7 @@ const buttonContainerId = "buttons"
 /* Global Variables */
 const MIN = 0
 const MAX = 10000
-const SIZE = 1000
+const SIZE = 10
 const values: number[] = randomArray(SIZE, MIN, MAX)
 
 /* Sketch Function */
@@ -31,11 +31,16 @@ function sketch(p: p5) {
   let didFindValue = false
 
   p.setup = () => {
+    //
+    // CONFIG
+    //
     p.createCanvas(visualizerDiv.clientWidth, visualizerDiv.clientHeight)
     p.strokeWeight(2)
-    p.textSize(Math.log(itemSize) * 2)
     p.frameRate(120)
 
+    //
+    // UI
+    //
     const speedSlider = p.createSlider(0, 10)
     speedSlider.parent(buttonContainerId)
 
@@ -73,13 +78,24 @@ function sketch(p: p5) {
   }
 
   /* change size on scroll */
+  const MIN_ITEM_SIZE = 30
+  const MAX_ITEM_SIZE = 200
+  const EXPECTED_SIZE = 10
   p.mouseWheel = (event: WheelEvent) => {
-    itemSize += -1 * event.deltaY
-    if (itemSize < 20) itemSize = 20
-    if (itemSize > 100) itemSize = 100
+    itemSize += -0.5 * event.deltaY
+    if (itemSize < MIN_ITEM_SIZE) itemSize = MIN_ITEM_SIZE
+    if (itemSize > MAX_ITEM_SIZE) itemSize = MAX_ITEM_SIZE
+    p.textSize((16 * EXPECTED_SIZE) / getItemsPerRow(itemSize))
   }
 
   p.draw = async () => {
+    p.translate(offsetX, offsetY)
+
+    if (p.mouseIsPressed) {
+      offsetX = offsetX + (p.mouseX - p.pmouseX)
+      offsetY = offsetY + (p.mouseY - p.pmouseY)
+    }
+
     p.background(204)
 
     /* draw value squares */
@@ -87,8 +103,8 @@ function sketch(p: p5) {
       /* row wrapping */
       const itemsPerRow = getItemsPerRow(itemSize)
 
-      const x = offsetX + itemSize * (index % itemsPerRow)
-      const y = offsetY + itemSize * Math.floor(index / itemsPerRow)
+      const x = itemSize * (index % itemsPerRow)
+      const y = itemSize * Math.floor(index / itemsPerRow)
 
       let color: ColorTuple
       let textColor: ColorTuple = [0, 0, 0]
@@ -101,11 +117,10 @@ function sketch(p: p5) {
         textColor = [255, 255, 255]
       }
 
-      drawItem(p, x, y, value, itemSize, color, textColor)
+      drawItem(p, x, y, offsetX, offsetY, value, itemSize, color, textColor)
       p.noStroke()
 
       p.fill(255, 255, 0, 10)
-      // p.rect(focusX, focusY, itemSize, itemSize)
     })
   }
 }
