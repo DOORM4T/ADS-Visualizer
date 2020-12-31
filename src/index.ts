@@ -1,31 +1,28 @@
 import * as p5 from "p5"
 import drawItem from "./functions/drawItem"
-import linearSearch from "./functions/linearSearch"
+import linearSearchAnimated from "./functions/linearSearch"
 import randomArray from "./functions/randomArray"
-import wait from "./functions/wait"
-
-// create p5 sketch in an existing div
-const sketchContainerId = "visualizer"
-const visualizerDiv = document.getElementById(
-  sketchContainerId,
-) as HTMLDivElement
-
-const buttonContainerId = "buttons"
 
 //
 // START THE SKETCH
 //
+/* Create the p5 sketch in an existing div */
+const sketchContainerId = "visualizer"
+const visualizerDiv = document.getElementById(
+  sketchContainerId,
+) as HTMLDivElement
+const buttonContainerId = "buttons"
 
 /* Global Variables */
 const MIN = 0
 const MAX = 10000
 const COUNT = 10
-const values: number[] = randomArray(COUNT, MIN, MAX)
 
 /* Sketch Function */
 function sketch(p: p5) {
   /* drawing parameters */
-  const state = {
+  const state: ISketchState = {
+    values: randomArray(COUNT, MIN, MAX),
     itemSize: 50,
     offsetX: 50,
     offsetY: 50,
@@ -36,7 +33,7 @@ function sketch(p: p5) {
   /* UI References */
   let doWrapCheckbox: p5.Element
   let speedSlider: p5.Element
-  let searchValue: p5.Element
+  let searchValueInput: p5.Element
   let linearSearchBtn: p5.Element
 
   /* CANVAS SETUP */
@@ -54,35 +51,17 @@ function sketch(p: p5) {
     speedSlider = p.createSlider(0, 10)
     speedSlider.parent(buttonContainerId)
 
+    /* input for the search value */
+    searchValueInput = p.createInput("Search for...", "number")
+    searchValueInput.parent(buttonContainerId)
+
     /* buttons for selecting the operation */
     /* LINEAR SEARCH */
-    searchValue = p.createInput("Search for...", "number")
-    searchValue.parent(buttonContainerId)
-
     linearSearchBtn = p.createButton("Linear Search")
     linearSearchBtn.parent(buttonContainerId)
-    linearSearchBtn.mouseClicked(async () => {
-      state.didFindValue = false
-      linearSearchBtn.attribute("disabled", "true")
-      /* call this function after each iteration in the linear search */
-      const funct = async (index: number) => {
-        /* set the index to focus on */
-        state.focusIndex = index
-
-        /* if slider is above 0, search with a delay */
-        const currentDelay = +speedSlider.value() * 10
-        if (currentDelay !== 0) await wait(currentDelay)
-      }
-
-      const startTime = new Date().getTime()
-      const result = await linearSearch(values, +searchValue.value(), funct)
-      const timeElapsedMs = new Date().getTime() - startTime
-      console.log(`${timeElapsedMs / 1000}s`)
-      linearSearchBtn.removeAttribute("disabled")
-
-      if (result > -1) state.didFindValue = true
-      else state.focusIndex = -1
-    })
+    linearSearchBtn.mouseClicked(
+      linearSearchAnimated(state, speedSlider, searchValueInput),
+    )
 
     /* BINARY SEARCH */
   }
@@ -120,7 +99,7 @@ function sketch(p: p5) {
     p.translate(state.offsetX, state.offsetY)
 
     /* draw value squares */
-    values.forEach((value, index) => {
+    state.values.forEach((value, index) => {
       /* row wrapping */
 
       const itemsPerRow = getItemsPerRow(

@@ -1,3 +1,45 @@
+import * as p5 from "p5"
+import wait from "./wait"
+
+/**
+ * Create a linear search animation function
+ * @param state sketch state
+ * @param speedSlider UI slider
+ * @param searchValueInput UI input for the value to search for
+ */
+function linearSearchAnimated(
+  state: ISketchState,
+  speedSlider: p5.Element,
+  searchValueInput: p5.Element,
+) {
+  return async () => {
+    state.didFindValue = false
+    /* call this function after each iteration in the linear search */
+    const funct = async (index: number) => {
+      /* set the index to focus on */
+      state.focusIndex = index
+
+      /* if slider is above 0, search with a delay */
+      const currentDelay = +speedSlider.value() * 10
+      if (currentDelay !== 0) await wait(currentDelay)
+    }
+
+    const startTime = new Date().getTime()
+    const result = await linearSearch(
+      state.values,
+      +searchValueInput.value(),
+      funct,
+    )
+    const timeElapsedMs = new Date().getTime() - startTime
+    console.log(`${timeElapsedMs / 1000}s`)
+
+    if (result > -1) state.didFindValue = true
+    else state.focusIndex = -1
+  }
+}
+
+export default linearSearchAnimated
+
 /**
  * Find a value in an array using Linear Search
  * @param array random array of numbers
@@ -5,7 +47,7 @@
  * @param funct [optional] function to call in between loop iterations
  * @returns index of desired number, or -1 if not found
  */
-async function linearSearch(
+export async function linearSearch(
   array: number[],
   desired: number,
   funct?: (index: number) => void,
@@ -27,5 +69,3 @@ async function linearSearch(
   /* not found */
   return -1
 }
-
-export default linearSearch
