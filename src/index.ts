@@ -19,7 +19,7 @@ const buttonContainerId = "buttons"
 /* Global Variables */
 const MIN = 0
 const MAX = 10000
-const COUNT = 2000
+const COUNT = 100
 
 /* Sketch Function */
 function sketch(p: p5) {
