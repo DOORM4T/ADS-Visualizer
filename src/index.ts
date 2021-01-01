@@ -4,6 +4,7 @@ import linearSearchAnimated from "./functions/search/linearSearch"
 import randomArray from "./functions/randomArray"
 import bubbleSortAnimated from "./functions/sorting/bubbleSort"
 import binarySearchAnimated from "./functions/search/binarySearch"
+import quickSortAnimated from "./functions/sorting/quickSort"
 
 //
 // START THE SKETCH
@@ -18,7 +19,7 @@ const buttonContainerId = "buttons"
 /* Global Variables */
 const MIN = 0
 const MAX = 10000
-const COUNT = 1000
+const COUNT = 2000
 
 /* Sketch Function */
 function sketch(p: p5) {
@@ -29,6 +30,7 @@ function sketch(p: p5) {
     offsetX: 50,
     offsetY: 50,
     highlightIndexes: [],
+    dimmedIndexes: [],
     didFindValue: false,
   }
 
@@ -38,6 +40,7 @@ function sketch(p: p5) {
   let searchValueInput: p5.Element
 
   let bubbleSortBtn: p5.Element
+  let quickSortBtn: p5.Element
 
   let linearSearchBtn: p5.Element
   let binarySearchBtn: p5.Element
@@ -66,11 +69,16 @@ function sketch(p: p5) {
     searchValueInput.parent(buttonContainerId)
     searchValueInput.value(0)
 
-    /* buttons for selecting the operation */
+    /* buttons */
     /* BUBBLE SORT */
     bubbleSortBtn = p.createButton("Bubble Sort")
     bubbleSortBtn.parent(buttonContainerId)
     bubbleSortBtn.mouseClicked(bubbleSortAnimated(state, speedSlider))
+
+    /* QUICK SORT */
+    quickSortBtn = p.createButton("Quick Sort")
+    quickSortBtn.parent(buttonContainerId)
+    quickSortBtn.mouseClicked(quickSortAnimated(state, speedSlider))
 
     /* LINEAR SEARCH */
     linearSearchBtn = p.createButton("Linear Search")
@@ -143,6 +151,8 @@ function sketch(p: p5) {
         /* highlight the focused index(es) */
         if (state.didFindValue) color = [0, 255, 0]
         else color = [255, 255, 0]
+      } else if (state.dimmedIndexes.includes(index)) {
+        color = [171, 145, 68]
       } else {
         /* default color */
         const saturation = p.map(

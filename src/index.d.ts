@@ -15,5 +15,6 @@ interface ISketchState {
   offsetX: number
   offsetY: number
   highlightIndexes: number[]
+  dimmedIndexes: number[]
   didFindValue: boolean
 }
