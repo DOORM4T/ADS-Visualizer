@@ -27,7 +27,7 @@ function quickSortAnimated(state: ISketchState, speedSlider: p5.Element) {
       }
 
       /* if slider is above 0, search with a delay */
-      const currentDelay = +speedSlider.value() / 4
+      const currentDelay = +speedSlider.value() / 3
       if (currentDelay !== 0) await wait(currentDelay)
     }
 
@@ -70,9 +70,7 @@ export async function quickSort(
   const partitionIndex = await partition(values, start, end, funct)
 
   /* custom function using the partition index */
-  if (funct) await funct(partitionIndex, false)
   await quickSort(values, start, partitionIndex - 1, funct)
-  if (funct) await funct(partitionIndex, false)
   await quickSort(values, partitionIndex + 1, end, funct)
 
   /* custom function using the partition index after it is sorted */
@@ -87,6 +85,7 @@ async function partition(
 ) {
   /* last index will be the pivot (TODO: other methods to select the pivot) */
   const pivot = array[end]
+  if (funct) await funct(end, false)
 
   /* index to place left partition values in */
   let leftPartitionIndex = start
