@@ -8,6 +8,10 @@ import wait from "../wait"
  */
 function quickSortAnimated(state: ISketchState, speedSlider: p5.Element) {
   return async () => {
+    /* prevent functions from running concurrently */
+    if (state.isRunningFunction) return
+    else state.isRunningFunction = true
+
     /* remove search result highlighting if a search algorithm preceded this one  */
     state.dimmedIndexes = []
     state.didFindValue = false
@@ -37,6 +41,8 @@ function quickSortAnimated(state: ISketchState, speedSlider: p5.Element) {
     /* remove index highlighting */
     state.highlightIndexes = []
     state.dimmedIndexes = []
+
+    state.isRunningFunction = false
   }
 }
 

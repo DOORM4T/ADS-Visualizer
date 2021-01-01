@@ -13,6 +13,10 @@ function linearSearchAnimated(
   searchValueInput: p5.Element,
 ) {
   return async () => {
+    /* prevent functions from running concurrently */
+    if (state.isRunningFunction) return
+    else state.isRunningFunction = true
+
     state.highlightIndexes = []
     state.didFindValue = false
     /* call this function after each iteration in the linear search */
@@ -43,6 +47,8 @@ function linearSearchAnimated(
         state.highlightIndexes.length,
       )
     } else state.highlightIndexes = []
+
+    state.isRunningFunction = false
   }
 }
 

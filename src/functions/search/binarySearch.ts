@@ -13,6 +13,10 @@ function binarySearchAnimated(
   searchValueInput: p5.Element,
 ) {
   return async () => {
+    /* prevent functions from running concurrently */
+    if (state.isRunningFunction) return
+    else state.isRunningFunction = true
+
     state.highlightIndexes = []
     state.didFindValue = false
 
@@ -42,6 +46,8 @@ function binarySearchAnimated(
     if (result > -1) {
       state.didFindValue = true
     } else state.highlightIndexes = []
+
+    state.isRunningFunction = false
   }
 }
 

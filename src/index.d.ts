@@ -17,4 +17,5 @@ interface ISketchState {
   highlightIndexes: number[]
   dimmedIndexes: number[]
   didFindValue: boolean
+  isRunningFunction: boolean
 }

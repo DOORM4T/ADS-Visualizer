@@ -32,6 +32,7 @@ function sketch(p: p5) {
     highlightIndexes: [],
     dimmedIndexes: [],
     didFindValue: false,
+    isRunningFunction: false,
   }
 
   /* UI References */

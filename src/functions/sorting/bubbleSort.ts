@@ -8,6 +8,10 @@ import wait from "../wait"
  */
 function bubbleSortAnimated(state: ISketchState, speedSlider: p5.Element) {
   return async () => {
+    /* prevent functions from running concurrently */
+    if (state.isRunningFunction) return
+    else state.isRunningFunction = true
+
     /* remove search result highlighting if a search algorithm preceded this one  */
     state.didFindValue = false
 
@@ -30,6 +34,8 @@ function bubbleSortAnimated(state: ISketchState, speedSlider: p5.Element) {
 
     /* remove index highlighting */
     state.highlightIndexes = []
+
+    state.isRunningFunction = false
   }
 }
 
